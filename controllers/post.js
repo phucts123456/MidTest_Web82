@@ -8,17 +8,26 @@ const createPost = async (req, res) => {
         if(apiKey) {
             console.log(apiKey)
             const userInfo = await getUserInfo(apiKey);
-            const userId = userInfo._id;
-            const content = req.body.content;
-            const newPost = {
-                userId: userId,
-                content: content,
+            if(userInfo)
+            {
+                const userId = userInfo._id;
+                const content = req.body.content;
+                const newPost = {
+                    userId: userId,
+                    content: content,
+                }
+                postModel.create(newPost);
+                res.status(200).send({
+                    message:"Create post success",
+                    data:newPost
+                })
             }
-            postModel.create(newPost);
-            res.status(200).send({
-                message:"Create post success",
-                data:newPost
-            })
+            else {
+                res.status(400).send({
+                    message:"apiKey not valid"
+                })
+            }   
+           
         }
         else {
             res.status(400).send({
@@ -29,7 +38,11 @@ const createPost = async (req, res) => {
     const getUserInfo = async (apiKey) => {
         const myArray = apiKey.split("-$");
         let userId = myArray[1].replace("$","");
-        return await userModel.findById(userId).exec();
+        const isValidObjectId = mongoose.isValidObjectId(userId)
+        const user = isValidObjectId 
+            ? await userModel.findById(userId).exec()
+            : null;
+        return user;
     }
     const updatePost = async (req, res) => {
         const apiKey = req.query.apiKey;
@@ -63,7 +76,7 @@ const createPost = async (req, res) => {
         }
         else{
             res.status(400).send({
-                message:"apiKey not valid"
+                message:"apiKey not valid" 
             })
         }
     }
