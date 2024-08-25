@@ -17,7 +17,7 @@ const registUser = async (req, res) => {
     console.log(isExist)
     if (isExist) {
         res.status(400).send({
-            message:"userName or mail is exists"
+            message:"Email is exists"
         })
     }
     else {
@@ -40,6 +40,13 @@ const login = async (req, res) => {
         const apiKey = `mern-$${isExist._id}$-$${isExist.email}$-$${uuidv4()}$`;
         res.status(200).send({
             message: "Login success",
+            apiKey: apiKey
+        })
+    }
+    else
+    {
+        res.status(400).send({
+            message: "Wrong user or password",
             apiKey: apiKey
         })
     }
