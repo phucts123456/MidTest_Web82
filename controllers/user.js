@@ -46,8 +46,7 @@ const login = async (req, res) => {
     else
     {
         res.status(400).send({
-            message: "Wrong user or password",
-            apiKey: apiKey
+            message: "Wrong user or password"
         })
     }
 }
